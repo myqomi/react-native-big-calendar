@@ -12,7 +12,7 @@ export interface DayJSConvertedEvent {
   start: dayjs.Dayjs
   end: dayjs.Dayjs
   title?: string
-  widget?: () => JSX.Element
+  widget?: (event: any) => JSX.Element
 }
 
 export type Event<T = {}> = BaseEvent & T

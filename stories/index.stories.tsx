@@ -21,32 +21,17 @@ const SCREEN_HEIGHT = Dimensions.get('window').height
 
 storiesOf('Desktop', module)
   .add('week mode', () => {
-    //   const [additionalEvents, setAdditionalEvents] = React.useState<typeof events>([])
+    const [additionalEvents, setAdditionalEvents] = React.useState<typeof events>([])
 
-    // const addEvent = (start: Date) => {
-    //   // @ts-ignore
-    //   const title = prompt('What is the event title?')
-    //   if (title) {
-    //     const end = dayjs(start).add(1, 'hour').toDate()
-    //     setAdditionalEvents([...additionalEvents, { start, end, title: title }])
-    //   }
-    // }
-
-    const Widget = () => {
-      return (
-        <View style={{ backgroundColor: 'red' }}>
-          <Text>{'test'}</Text>
-        </View>
-      )
+    const addEvent = (start: Date) => {
+      // @ts-ignore
+      const title = prompt('What is the event title?')
+      if (title) {
+        const end = dayjs(start).add(1, 'hour').toDate()
+        setAdditionalEvents([...additionalEvents, { start, end, title: title }])
+      }
     }
-    const additionalEvents = [
-      {
-        title: 'Mishka',
-        widget: Widget,
-        start: dayjs().add(2, 'day').set('hour', 7).set('minute', 45).toDate(),
-        end: dayjs().add(2, 'day').set('hour', 13).set('minute', 30).toDate(),
-      },
-    ]
+
     return (
       <View style={styles.desktop}>
         <Calendar
@@ -54,6 +39,7 @@ storiesOf('Desktop', module)
           height={SCREEN_HEIGHT}
           events={[...events, ...additionalEvents]}
           onPressEvent={(event) => alert(event.title)}
+          onPressCell={addEvent}
         />
       </View>
     )

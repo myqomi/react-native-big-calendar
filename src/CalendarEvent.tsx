@@ -34,7 +34,6 @@ export const CalendarEvent = React.memo(
       },
       [event],
     )
-
     return (
       <TouchableOpacity
         delayPressIn={20}
@@ -49,8 +48,14 @@ export const CalendarEvent = React.memo(
           </Text>
         ) : (
           <>
-            <Text style={commonStyles.eventTitle}>{event.title}</Text>
-            {showTime && <Text style={styles.eventTime}>{formatStartEnd(event)}</Text>}
+            {event.widget ? (
+              event.widget(event)
+            ) : (
+              <Text style={commonStyles.eventTitle}>{event.title}</Text>
+            )}
+            {showTime && !event.widget && (
+              <Text style={styles.eventTime}>{formatStartEnd(event)}</Text>
+            )}
           </>
         )}
       </TouchableOpacity>

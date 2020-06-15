@@ -4,13 +4,15 @@ import { ViewStyle } from 'react-native'
 export interface BaseEvent {
   start: Date
   end: Date
-  title: string
+  title?: string
+  widget?: () => JSX.Element
 }
 
 export interface DayJSConvertedEvent {
   start: dayjs.Dayjs
   end: dayjs.Dayjs
-  title: string
+  title?: string
+  widget?: () => JSX.Element
 }
 
 export type Event<T = {}> = BaseEvent & T

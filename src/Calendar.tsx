@@ -30,6 +30,7 @@ interface CalendarProps<T = {}> {
   onPressEvent?: (event: Event<T>) => void
   onPressDateHeader?: (date: Date) => void
   onPressCell?: (date: Date) => void
+  overwriteCellHeight?: number | undefined
 }
 
 export const Calendar = React.memo(
@@ -37,6 +38,7 @@ export const Calendar = React.memo(
     events,
     style = {},
     height,
+    overwriteCellHeight,
     mode = 'week',
     locale = 'en',
     eventCellStyle,
@@ -106,7 +108,7 @@ export const Calendar = React.memo(
     )
 
     const commonProps = {
-      cellHeight,
+      cellHeight: overwriteCellHeight || cellHeight,
       dateRange,
       style,
     }

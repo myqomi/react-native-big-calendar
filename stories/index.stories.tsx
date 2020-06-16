@@ -70,6 +70,7 @@ storiesOf('Desktop', module)
     return (
       <View style={styles.desktop}>
         <Calendar
+          scrollToNow={true}
           style={styles.calendar}
           height={SCREEN_HEIGHT}
           overwriteCellHeight={50}

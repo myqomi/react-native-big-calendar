@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import * as React from 'react'
 import {
+  LayoutRectangle,
   PanResponder,
   Platform,
   ScrollView,
@@ -29,6 +30,7 @@ interface CalendarBodyProps<T> {
   eventCellStyle?: EventCellStyle<T>
   scrollOffsetMinutes: number
   showTime: boolean
+  scrollToNow?: boolean
   overwriteCellHeight?: number
   onSwipeHorizontal?: (d: HorizontalDirection) => void
 }
@@ -70,6 +72,7 @@ export const CalendarBody = React.memo(
     onPressEvent,
     eventCellStyle,
     showTime,
+    scrollToNow,
     scrollOffsetMinutes,
     onSwipeHorizontal,
   }: CalendarBodyProps<any>) => {
@@ -77,15 +80,15 @@ export const CalendarBody = React.memo(
     const [now, setNow] = React.useState(dayjs())
     const [panHandled, setPanHandled] = React.useState(false)
     const [zoom, setZoom] = React.useState<any>(overwriteCellHeight)
-
+    const [nowLayout, setNowLayout] = React.useState<LayoutRectangle>()
     React.useEffect(() => {
-      if (scrollView.current && scrollOffsetMinutes) {
+      if (scrollView.current && (scrollOffsetMinutes || scrollToNow)) {
         // We add delay here to work correct on React Native
         // see: https://stackoverflow.com/questions/33208477/react-native-android-scrollview-scrollto-not-working
         setTimeout(
           () => {
             scrollView.current!.scrollTo({
-              y: (cellHeight * scrollOffsetMinutes) / 60,
+              y: scrollToNow ? nowLayout?.y : (cellHeight * scrollOffsetMinutes) / 60,
               animated: false,
             })
           },
@@ -189,7 +192,12 @@ export const CalendarBody = React.memo(
                     />
                   ))}
                 {isToday(date) && (
-                  <View style={[styles.nowIndicator, { top: `${getRelativeTopInDay(now)}%` }]} />
+                  <View
+                    style={[styles.nowIndicator, { top: `${getRelativeTopInDay(now)}%` }]}
+                    onLayout={(event) => {
+                      setNowLayout(event?.nativeEvent?.layout)
+                    }}
+                  />
                 )}
               </View>
             ))}

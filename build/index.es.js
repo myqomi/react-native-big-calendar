@@ -270,6 +270,7 @@ var CalendarBody = memo(function (_a) {
     onPressEvent = _a.onPressEvent,
     eventCellStyle = _a.eventCellStyle,
     showTime = _a.showTime,
+    scrollToNow = _a.scrollToNow,
     scrollOffsetMinutes = _a.scrollOffsetMinutes,
     onSwipeHorizontal = _a.onSwipeHorizontal
   var scrollView = useRef(null)
@@ -282,13 +283,20 @@ var CalendarBody = memo(function (_a) {
   var _e = useState(overwriteCellHeight),
     zoom = _e[0],
     setZoom = _e[1]
+  var _f = useState(),
+    nowLayout = _f[0],
+    setNowLayout = _f[1]
   useEffect(
     function () {
-      if (scrollView.current && scrollOffsetMinutes) {
+      if (scrollView.current && (scrollOffsetMinutes || scrollToNow)) {
         setTimeout(
           function () {
             scrollView.current.scrollTo({
-              y: (cellHeight * scrollOffsetMinutes) / 60,
+              y: scrollToNow
+                ? nowLayout === null || nowLayout === void 0
+                  ? void 0
+                  : nowLayout.y
+                : (cellHeight * scrollOffsetMinutes) / 60,
               animated: false,
             })
           },
@@ -419,6 +427,15 @@ var CalendarBody = memo(function (_a) {
             isToday(date) &&
               createElement(View, {
                 style: [styles$1.nowIndicator, { top: getRelativeTopInDay(now) + '%' }],
+                onLayout: function (event) {
+                  var _a
+                  setNowLayout(
+                    (_a = event === null || event === void 0 ? void 0 : event.nativeEvent) ===
+                      null || _a === void 0
+                      ? void 0
+                      : _a.layout,
+                  )
+                },
               }),
           )
         }),
@@ -555,12 +572,14 @@ var Calendar = memo(function (_a) {
     _h = _a.showTime,
     showTime = _h === void 0 ? true : _h,
     onPressEvent = _a.onPressEvent,
+    _j = _a.scrollToNow,
+    scrollToNow = _j === void 0 ? false : _j,
     onPressDateHeader = _a.onPressDateHeader,
     onChangeDate = _a.onChangeDate,
     onPressCell = _a.onPressCell
-  var _j = useState(dayjs(date)),
-    targetDate = _j[0],
-    setTargetDate = _j[1]
+  var _k = useState(dayjs(date)),
+    targetDate = _k[0],
+    setTargetDate = _k[1]
   useEffect(
     function () {
       if (date) {
@@ -648,7 +667,7 @@ var Calendar = memo(function (_a) {
     ),
     createElement(
       CalendarBody,
-      __assign({}, commonProps, {
+      __assign({ scrollToNow: scrollToNow }, commonProps, {
         overwriteCellHeight: overwriteCellHeight,
         dayJsConvertedEvents: daytimeEvents,
         containerHeight: height,

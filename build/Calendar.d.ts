@@ -18,6 +18,7 @@ interface CalendarProps<T = {}> {
   onPressDateHeader?: (date: Date) => void
   onPressCell?: (date: Date) => void
   overwriteCellHeight?: number | undefined
+  scrollToNow?: boolean | undefined
 }
 export declare const Calendar: React.MemoExoticComponent<({
   events,
@@ -33,6 +34,7 @@ export declare const Calendar: React.MemoExoticComponent<({
   weekStartsOn,
   showTime,
   onPressEvent,
+  scrollToNow,
   onPressDateHeader,
   onChangeDate,
   onPressCell,

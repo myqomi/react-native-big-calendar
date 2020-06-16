@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
   ViewStyle,
@@ -75,7 +76,7 @@ export const CalendarBody = React.memo(
     const scrollView = React.useRef<ScrollView>(null)
     const [now, setNow] = React.useState(dayjs())
     const [panHandled, setPanHandled] = React.useState(false)
-    const [zoom, setZoom] = React.useState<number>(overwriteCellHeight)
+    const [zoom, setZoom] = React.useState<any>(overwriteCellHeight)
 
     React.useEffect(() => {
       if (scrollView.current && scrollOffsetMinutes) {
@@ -136,13 +137,13 @@ export const CalendarBody = React.memo(
 
     return (
       <>
-        <TouchableWithoutFeedback
+        <TouchableOpacity
           onPress={() => {
-            setZoom(zoom + 10)
+            setZoom(zoom + 20)
           }}
         >
           <Text>{'Zoom'}</Text>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
         <ScrollView
           style={[
             {

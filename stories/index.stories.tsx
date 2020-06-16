@@ -1,12 +1,12 @@
 import { storiesOf } from '@storybook/react'
 import dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import React from 'react'
 import { Alert, Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Calendar } from '../src/Calendar'
+import ValvesCalenderWidget from '../src/ValvesCalenderWidger/ValvesCalenderWidget'
 import { AppHeader, HEADER_HEIGHT } from './components/AppHeader'
 import { Control, CONTROL_HEIGHT } from './components/Control'
-import { events } from './events'
-
 function alert(input: any) {
   // @ts-ignore
   if (typeof window !== 'undefined') {
@@ -15,6 +15,41 @@ function alert(input: any) {
   }
   return Alert.alert('', String(input))
 }
+
+const amount = [
+  {
+    valve: 'ck9morhbuayhy0934p1nk1k7k',
+    amount: 60,
+  },
+  {
+    valve: 'ck9morhbuayhy0934p1nk1k7c',
+    amount: 160,
+  },
+  {
+    valve: 'ck9morhbuayhy0934p1nk1k7c',
+    amount: 560,
+  },
+]
+const events = [
+  {
+    title: 'Meeting',
+    start: dayjs().set('hour', 10).set('minute', 0).toDate(),
+    end: dayjs().set('hour', 10).set('minute', 30).toDate(),
+  },
+  {
+    title: 'Coffee break',
+    start: dayjs().set('hour', 14).set('minute', 30).toDate(),
+    end: dayjs().set('hour', 15).set('minute', 30).toDate(),
+  },
+  {
+    title: 'Repair my car',
+    widget: () => {
+      return <ValvesCalenderWidget amount={amount} />
+    },
+    start: dayjs().add(1, 'day').set('hour', 5).set('minute', 0).toDate(),
+    end: dayjs().add(1, 'day').set('hour', 8).set('minute', 0).toDate(),
+  },
+]
 
 const MOBILE_HEIGHT = 736
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -36,7 +71,7 @@ storiesOf('Desktop', module)
       <View style={styles.desktop}>
         <Calendar
           style={styles.calendar}
-          height={SCREEN_HEIGHT}
+          overwriteCellHeight={120}
           events={[...events, ...additionalEvents]}
           onPressEvent={(event) => alert(event.title)}
           onPressCell={addEvent}

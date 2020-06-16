@@ -60,7 +60,6 @@ var commonStyles = reactNative.StyleSheet.create({
   },
   eventCell: {
     position: 'absolute',
-    backgroundColor: PRIMARY_COLOR,
     zIndex: 100,
     width: '96%',
     alignSelf: 'center',
@@ -184,7 +183,12 @@ var CalendarEvent = React.memo(function (_a) {
     {
       delayPressIn: 20,
       key: event.start.toString(),
-      style: [commonStyles.eventCell, getEventCellPositionStyle(event), getEventStyle(event)],
+      style: [
+        commonStyles.eventCell,
+        getEventCellPositionStyle(event),
+        getEventStyle(event),
+        event.widget ? { backgroundColor: 'transparent' } : { backgroundColor: PRIMARY_COLOR },
+      ],
       onPress: function () {
         return _onPress(event)
       },

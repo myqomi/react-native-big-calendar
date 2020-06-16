@@ -20,7 +20,6 @@ export declare const commonStyles: {
   }
   eventCell: {
     position: 'absolute'
-    backgroundColor: string
     zIndex: number
     width: string
     alignSelf: 'center'

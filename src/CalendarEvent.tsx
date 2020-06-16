@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import * as React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import { commonStyles } from './commonStyles'
+import { commonStyles, PRIMARY_COLOR } from './commonStyles'
 import { DayJSConvertedEvent, Event, EventCellStyle } from './interfaces'
 import { DAY_MINUTES, formatStartEnd, getRelativeTopInDay } from './utils'
 
@@ -38,7 +38,12 @@ export const CalendarEvent = React.memo(
       <TouchableOpacity
         delayPressIn={20}
         key={event.start.toString()}
-        style={[commonStyles.eventCell, getEventCellPositionStyle(event), getEventStyle(event)]}
+        style={[
+          commonStyles.eventCell,
+          getEventCellPositionStyle(event),
+          getEventStyle(event),
+          event.widget ? { backgroundColor: 'transparent' } : { backgroundColor: PRIMARY_COLOR },
+        ]}
         onPress={() => _onPress(event)}
         disabled={!onPressEvent}
       >

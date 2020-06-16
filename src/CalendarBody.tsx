@@ -34,16 +34,13 @@ interface CalendarBodyProps<T> {
 
 interface WithCellHeight {
   cellHeight: number
-  overwriteCellHeight?: number
+  zoom?: number
 }
 
-const HourGuideColumn = React.memo(
-  ({ cellHeight, hour, overwriteCellHeight }: WithCellHeight & { hour: number }) => (
-    <View style={{ height: overwriteCellHeight || cellHeight }}>
-      <Text style={commonStyles.guideText}>{formatHour(hour)}</Text>
-    </View>
-  ),
-  () => true,
+const HourGuideColumn = ({ cellHeight, hour, zoom }: WithCellHeight & { hour: number }) => (
+  <View style={{ height: zoom || cellHeight }}>
+    <Text style={commonStyles.guideText}>{formatHour(hour)}</Text>
+  </View>
 )
 
 interface HourCellProps extends WithCellHeight {
@@ -52,10 +49,10 @@ interface HourCellProps extends WithCellHeight {
   hour: number
 }
 
-function HourCell({ cellHeight, onPress, date, hour, overwriteCellHeight }: HourCellProps) {
+function HourCell({ cellHeight, onPress, date, hour, zoom }: HourCellProps) {
   return (
     <TouchableWithoutFeedback onPress={() => onPress(date.hour(hour).minute(0))}>
-      <View style={[commonStyles.dateCell, { height: overwriteCellHeight || cellHeight }]} />
+      <View style={[commonStyles.dateCell, { height: zoom || cellHeight }]} />
     </TouchableWithoutFeedback>
   )
 }
@@ -78,6 +75,7 @@ export const CalendarBody = React.memo(
     const scrollView = React.useRef<ScrollView>(null)
     const [now, setNow] = React.useState(dayjs())
     const [panHandled, setPanHandled] = React.useState(false)
+    const [zoom, setZoom] = React.useState<number>(overwriteCellHeight)
 
     React.useEffect(() => {
       if (scrollView.current && scrollOffsetMinutes) {
@@ -137,62 +135,66 @@ export const CalendarBody = React.memo(
     )
 
     return (
-      <ScrollView
-        style={[
-          {
-            height: containerHeight - cellHeight * 3,
-          },
-          style,
-        ]}
-        ref={scrollView}
-        scrollEventThrottle={32}
-        {...(Platform.OS !== 'web' ? panResponder.panHandlers : {})}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={[styles.body]} {...(Platform.OS === 'web' ? panResponder.panHandlers : {})}>
-          <View style={[commonStyles.hourGuide]}>
-            {hours.map((hour) => (
-              <HourGuideColumn
-                key={hour}
-                cellHeight={cellHeight}
-                hour={hour}
-                overwriteCellHeight={overwriteCellHeight}
-              />
-            ))}
-          </View>
-          {dateRange.map((date) => (
-            <View style={[{ flex: 1 }]} key={date.toString()}>
+      <>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setZoom(zoom + 10)
+          }}
+        >
+          <Text>{'Zoom'}</Text>
+        </TouchableWithoutFeedback>
+        <ScrollView
+          style={[
+            {
+              height: containerHeight - cellHeight * 3,
+            },
+            style,
+          ]}
+          ref={scrollView}
+          scrollEventThrottle={32}
+          {...(Platform.OS !== 'web' ? panResponder.panHandlers : {})}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={[styles.body]} {...(Platform.OS === 'web' ? panResponder.panHandlers : {})}>
+            <View style={[commonStyles.hourGuide]}>
               {hours.map((hour) => (
-                <HourCell
-                  key={hour}
-                  cellHeight={cellHeight}
-                  date={date}
-                  hour={hour}
-                  overwriteCellHeight={overwriteCellHeight}
-                  onPress={_onPressCell}
-                />
+                <HourGuideColumn key={hour} cellHeight={cellHeight} hour={hour} zoom={zoom} />
               ))}
-              {dayJsConvertedEvents
-                .filter(
-                  ({ start, end }) =>
-                    start.isAfter(date.startOf('day')) && end.isBefore(date.endOf('day')),
-                )
-                .map((event) => (
-                  <CalendarEvent
-                    key={event.start.toString()}
-                    event={event}
-                    onPressEvent={onPressEvent}
-                    eventCellStyle={eventCellStyle}
-                    showTime={showTime}
+            </View>
+            {dateRange.map((date) => (
+              <View style={[{ flex: 1 }]} key={date.toString()}>
+                {hours.map((hour) => (
+                  <HourCell
+                    key={hour}
+                    cellHeight={cellHeight}
+                    date={date}
+                    hour={hour}
+                    zoom={zoom}
+                    onPress={_onPressCell}
                   />
                 ))}
-              {isToday(date) && (
-                <View style={[styles.nowIndicator, { top: `${getRelativeTopInDay(now)}%` }]} />
-              )}
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+                {dayJsConvertedEvents
+                  .filter(
+                    ({ start, end }) =>
+                      start.isAfter(date.startOf('day')) && end.isBefore(date.endOf('day')),
+                  )
+                  .map((event) => (
+                    <CalendarEvent
+                      key={event.start.toString()}
+                      event={event}
+                      onPressEvent={onPressEvent}
+                      eventCellStyle={eventCellStyle}
+                      showTime={showTime}
+                    />
+                  ))}
+                {isToday(date) && (
+                  <View style={[styles.nowIndicator, { top: `${getRelativeTopInDay(now)}%` }]} />
+                )}
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </>
     )
   },
 )

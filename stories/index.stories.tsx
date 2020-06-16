@@ -71,7 +71,8 @@ storiesOf('Desktop', module)
       <View style={styles.desktop}>
         <Calendar
           style={styles.calendar}
-          overwriteCellHeight={120}
+          height={SCREEN_HEIGHT}
+          overwriteCellHeight={50}
           events={[...events, ...additionalEvents]}
           onPressEvent={(event) => alert(event.title)}
           onPressCell={addEvent}

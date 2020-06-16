@@ -28,16 +28,18 @@ interface CalendarBodyProps<T> {
   eventCellStyle?: EventCellStyle<T>
   scrollOffsetMinutes: number
   showTime: boolean
+  overwriteCellHeight?: number
   onSwipeHorizontal?: (d: HorizontalDirection) => void
 }
 
 interface WithCellHeight {
   cellHeight: number
+  overwriteCellHeight?: number
 }
 
 const HourGuideColumn = React.memo(
-  ({ cellHeight, hour }: WithCellHeight & { hour: number }) => (
-    <View style={{ height: cellHeight }}>
+  ({ cellHeight, hour, overwriteCellHeight }: WithCellHeight & { hour: number }) => (
+    <View style={{ height: overwriteCellHeight || cellHeight }}>
       <Text style={commonStyles.guideText}>{formatHour(hour)}</Text>
     </View>
   ),
@@ -50,10 +52,10 @@ interface HourCellProps extends WithCellHeight {
   hour: number
 }
 
-function HourCell({ cellHeight, onPress, date, hour }: HourCellProps) {
+function HourCell({ cellHeight, onPress, date, hour, overwriteCellHeight }: HourCellProps) {
   return (
     <TouchableWithoutFeedback onPress={() => onPress(date.hour(hour).minute(0))}>
-      <View style={[commonStyles.dateCell, { height: cellHeight }]} />
+      <View style={[commonStyles.dateCell, { height: overwriteCellHeight || cellHeight }]} />
     </TouchableWithoutFeedback>
   )
 }
@@ -66,6 +68,7 @@ export const CalendarBody = React.memo(
     style = {},
     onPressCell,
     dayJsConvertedEvents,
+    overwriteCellHeight,
     onPressEvent,
     eventCellStyle,
     showTime,
@@ -149,7 +152,12 @@ export const CalendarBody = React.memo(
         <View style={[styles.body]} {...(Platform.OS === 'web' ? panResponder.panHandlers : {})}>
           <View style={[commonStyles.hourGuide]}>
             {hours.map((hour) => (
-              <HourGuideColumn key={hour} cellHeight={cellHeight} hour={hour} />
+              <HourGuideColumn
+                key={hour}
+                cellHeight={cellHeight}
+                hour={hour}
+                overwriteCellHeight={overwriteCellHeight}
+              />
             ))}
           </View>
           {dateRange.map((date) => (
@@ -160,6 +168,7 @@ export const CalendarBody = React.memo(
                   cellHeight={cellHeight}
                   date={date}
                   hour={hour}
+                  overwriteCellHeight={overwriteCellHeight}
                   onPress={_onPressCell}
                 />
               ))}

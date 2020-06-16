@@ -108,6 +108,7 @@ export const Calendar = React.memo(
     )
 
     const commonProps = {
+      cellHeight,
       dateRange,
       style,
     }
@@ -116,13 +117,12 @@ export const Calendar = React.memo(
       <>
         <CalendarHeader
           {...commonProps}
-          cellHeight={cellHeight}
           allDayEvents={allDayEvents}
           onPressDateHeader={onPressDateHeader}
         />
         <CalendarBody
           {...commonProps}
-          cellHeight={overwriteCellHeight || cellHeight}
+          overwriteCellHeight={overwriteCellHeight}
           dayJsConvertedEvents={daytimeEvents}
           containerHeight={height}
           onPressEvent={onPressEvent}

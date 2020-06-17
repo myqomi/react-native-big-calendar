@@ -270,13 +270,13 @@ var CalendarBody = React.memo(function (_a) {
     style = _b === void 0 ? {} : _b,
     onPressCell = _a.onPressCell,
     dayJsConvertedEvents = _a.dayJsConvertedEvents,
-    overwriteCellHeight = _a.overwriteCellHeight,
     onPressEvent = _a.onPressEvent,
     eventCellStyle = _a.eventCellStyle,
     showTime = _a.showTime,
     scrollToNow = _a.scrollToNow,
     scrollOffsetMinutes = _a.scrollOffsetMinutes,
-    onSwipeHorizontal = _a.onSwipeHorizontal
+    onSwipeHorizontal = _a.onSwipeHorizontal,
+    zoom = _a.zoom
   var scrollView = React.useRef(null)
   var _c = React.useState(dayjs()),
     now = _c[0],
@@ -284,12 +284,9 @@ var CalendarBody = React.memo(function (_a) {
   var _d = React.useState(false),
     panHandled = _d[0],
     setPanHandled = _d[1]
-  var _e = React.useState(overwriteCellHeight),
-    zoom = _e[0],
-    setZoom = _e[1]
-  var _f = React.useState(),
-    nowLayout = _f[0],
-    setNowLayout = _f[1]
+  var _e = React.useState(),
+    nowLayout = _e[0],
+    setNowLayout = _e[1]
   React.useEffect(
     function () {
       if (scrollView.current && (scrollOffsetMinutes || scrollToNow)) {
@@ -359,15 +356,6 @@ var CalendarBody = React.memo(function (_a) {
   return React.createElement(
     React.Fragment,
     null,
-    React.createElement(
-      reactNative.TouchableOpacity,
-      {
-        onPress: function () {
-          setZoom(zoom + 20)
-        },
-      },
-      React.createElement(reactNative.Text, null, 'Zoom'),
-    ),
     React.createElement(
       reactNative.ScrollView,
       __assign(
@@ -569,7 +557,6 @@ var Calendar = React.memo(function (_a) {
     _b = _a.style,
     style = _b === void 0 ? {} : _b,
     height = _a.height,
-    overwriteCellHeight = _a.overwriteCellHeight,
     _c = _a.mode,
     mode = _c === void 0 ? 'week' : _c,
     _d = _a.locale,
@@ -589,7 +576,8 @@ var Calendar = React.memo(function (_a) {
     scrollToNow = _j === void 0 ? false : _j,
     onPressDateHeader = _a.onPressDateHeader,
     onChangeDate = _a.onChangeDate,
-    onPressCell = _a.onPressCell
+    onPressCell = _a.onPressCell,
+    zoom = _a.zoom
   var _k = React.useState(dayjs(date)),
     targetDate = _k[0],
     setTargetDate = _k[1]
@@ -681,7 +669,7 @@ var Calendar = React.memo(function (_a) {
     React.createElement(
       CalendarBody,
       __assign({ scrollToNow: scrollToNow }, commonProps, {
-        overwriteCellHeight: overwriteCellHeight,
+        zoom: zoom,
         dayJsConvertedEvents: daytimeEvents,
         containerHeight: height,
         onPressEvent: onPressEvent,

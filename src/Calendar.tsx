@@ -32,6 +32,7 @@ interface CalendarProps<T = {}> {
   onPressCell?: (date: Date) => void
   overwriteCellHeight?: number | undefined
   scrollToNow?: boolean | undefined
+  zoom?: number
 }
 
 export const Calendar = React.memo(
@@ -39,7 +40,6 @@ export const Calendar = React.memo(
     events,
     style = {},
     height,
-    overwriteCellHeight,
     mode = 'week',
     locale = 'en',
     eventCellStyle,
@@ -53,6 +53,7 @@ export const Calendar = React.memo(
     onPressDateHeader,
     onChangeDate,
     onPressCell,
+    zoom,
   }: CalendarProps) => {
     const [targetDate, setTargetDate] = React.useState(dayjs(date))
 
@@ -125,7 +126,7 @@ export const Calendar = React.memo(
         <CalendarBody
           scrollToNow={scrollToNow}
           {...commonProps}
-          overwriteCellHeight={overwriteCellHeight}
+          zoom={zoom}
           dayJsConvertedEvents={daytimeEvents}
           containerHeight={height}
           onPressEvent={onPressEvent}

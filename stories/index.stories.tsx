@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/react'
 import dayjs from 'dayjs'
 import dayjs from 'dayjs'
 import React from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Calendar } from '../src/Calendar'
 import ValvesCalenderWidget from '../src/ValvesCalenderWidger/ValvesCalenderWidget'
 import { AppHeader, HEADER_HEIGHT } from './components/AppHeader'
@@ -66,17 +66,21 @@ storiesOf('Desktop', module)
         setAdditionalEvents([...additionalEvents, { start, end, title: title }])
       }
     }
+    const [zoom, setZoom] = React.useState<any>(50)
 
     return (
       <View style={styles.desktop}>
+        <TouchableOpacity onPress={() => setZoom(zoom + 10)}>
+          <Text>{'Zoom'}</Text>
+        </TouchableOpacity>
         <Calendar
           scrollToNow={true}
           style={styles.calendar}
           height={SCREEN_HEIGHT}
-          overwriteCellHeight={50}
           events={[...events, ...additionalEvents]}
           onPressEvent={(event) => alert(event.title)}
           onPressCell={addEvent}
+          zoom={zoom}
         />
       </View>
     )

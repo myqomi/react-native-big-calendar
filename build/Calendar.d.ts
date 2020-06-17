@@ -19,12 +19,12 @@ interface CalendarProps<T = {}> {
   onPressCell?: (date: Date) => void
   overwriteCellHeight?: number | undefined
   scrollToNow?: boolean | undefined
+  zoom?: number
 }
 export declare const Calendar: React.MemoExoticComponent<({
   events,
   style,
   height,
-  overwriteCellHeight,
   mode,
   locale,
   eventCellStyle,
@@ -38,5 +38,6 @@ export declare const Calendar: React.MemoExoticComponent<({
   onPressDateHeader,
   onChangeDate,
   onPressCell,
+  zoom,
 }: CalendarProps<{}>) => JSX.Element>
 export {}

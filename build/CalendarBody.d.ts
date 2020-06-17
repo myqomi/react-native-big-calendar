@@ -16,6 +16,7 @@ interface CalendarBodyProps<T> {
   scrollToNow?: boolean
   overwriteCellHeight?: number
   onSwipeHorizontal?: (d: HorizontalDirection) => void
+  zoom?: number
 }
 export declare const CalendarBody: React.MemoExoticComponent<({
   containerHeight,
@@ -24,12 +25,12 @@ export declare const CalendarBody: React.MemoExoticComponent<({
   style,
   onPressCell,
   dayJsConvertedEvents,
-  overwriteCellHeight,
   onPressEvent,
   eventCellStyle,
   showTime,
   scrollToNow,
   scrollOffsetMinutes,
   onSwipeHorizontal,
+  zoom,
 }: CalendarBodyProps<any>) => JSX.Element>
 export {}

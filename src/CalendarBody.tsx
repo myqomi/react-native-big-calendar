@@ -7,7 +7,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
   ViewStyle,
@@ -33,6 +32,7 @@ interface CalendarBodyProps<T> {
   scrollToNow?: boolean
   overwriteCellHeight?: number
   onSwipeHorizontal?: (d: HorizontalDirection) => void
+  zoom?: number
 }
 
 interface WithCellHeight {
@@ -50,6 +50,7 @@ interface HourCellProps extends WithCellHeight {
   onPress: (d: dayjs.Dayjs) => void
   date: dayjs.Dayjs
   hour: number
+  zoom?: number
 }
 
 function HourCell({ cellHeight, onPress, date, hour, zoom }: HourCellProps) {
@@ -68,18 +69,17 @@ export const CalendarBody = React.memo(
     style = {},
     onPressCell,
     dayJsConvertedEvents,
-    overwriteCellHeight,
     onPressEvent,
     eventCellStyle,
     showTime,
     scrollToNow,
     scrollOffsetMinutes,
     onSwipeHorizontal,
+    zoom,
   }: CalendarBodyProps<any>) => {
     const scrollView = React.useRef<ScrollView>(null)
     const [now, setNow] = React.useState(dayjs())
     const [panHandled, setPanHandled] = React.useState(false)
-    const [zoom, setZoom] = React.useState<any>(overwriteCellHeight)
     const [nowLayout, setNowLayout] = React.useState<LayoutRectangle>()
     React.useEffect(() => {
       if (scrollView.current && (scrollOffsetMinutes || scrollToNow)) {
@@ -140,13 +140,6 @@ export const CalendarBody = React.memo(
 
     return (
       <>
-        <TouchableOpacity
-          onPress={() => {
-            setZoom(zoom + 20)
-          }}
-        >
-          <Text>{'Zoom'}</Text>
-        </TouchableOpacity>
         <ScrollView
           style={[
             {

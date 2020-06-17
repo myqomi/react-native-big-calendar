@@ -34,18 +34,11 @@ export default function ValvesCalenderWidget({
   // }, 0);
   const proportions = useCallback(
     (amount) => {
-      console.log({ amount })
       return Number((amount / containerRectangle.height).toPrecision(2))
     },
     [containerRectangle.height],
   )
 
-  console.log(
-    '%c',
-    'background: green; color: #fff;font-size:15px',
-    proportions,
-    containerRectangle,
-  )
   const Valve = ({ children, flex }: ValveType) => {
     return <View style={[styles.valve, { flex }]}>{children}</View>
   }

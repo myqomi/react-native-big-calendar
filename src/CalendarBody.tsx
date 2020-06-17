@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 import * as React from 'react'
 import {
-  LayoutRectangle,
   PanResponder,
   Platform,
   ScrollView,
@@ -38,12 +37,31 @@ interface CalendarBodyProps<T> {
 interface WithCellHeight {
   cellHeight: number
   zoom?: number
+  scrollView: ScrollView
+  scrollToNow?: boolean
 }
 
-const HourGuideColumn = ({ cellHeight, hour, zoom }: WithCellHeight & { hour: number }) => (
-  <View style={{ height: zoom || cellHeight }}>
-    <Text style={commonStyles.guideText}>{formatHour(hour)}</Text>
-  </View>
+const HourGuideColumn = React.memo(
+  ({ cellHeight, hour, zoom, scrollView, scrollToNow }: WithCellHeight & { hour: number }) => {
+    return (
+      <View
+        style={[{ height: zoom || cellHeight }]}
+        onLayout={(event) => {
+          const { y } = event.nativeEvent.layout
+          //@ts-ignore
+          if (dayjs().$H === hour && scrollToNow) {
+            //@ts-ignore
+            scrollView!.current?.scrollTo({
+              y,
+              animated: true,
+            })
+          }
+        }}
+      >
+        <Text style={commonStyles.guideText}>{formatHour(hour)}</Text>
+      </View>
+    )
+  },
 )
 
 interface HourCellProps extends WithCellHeight {
@@ -80,22 +98,21 @@ export const CalendarBody = React.memo(
     const scrollView = React.useRef<ScrollView>(null)
     const [now, setNow] = React.useState(dayjs())
     const [panHandled, setPanHandled] = React.useState(false)
-    const [nowLayout, setNowLayout] = React.useState<LayoutRectangle>()
     React.useEffect(() => {
-      if (scrollView.current && (scrollOffsetMinutes || scrollToNow)) {
+      if (scrollView.current && scrollOffsetMinutes) {
         // We add delay here to work correct on React Native
         // see: https://stackoverflow.com/questions/33208477/react-native-android-scrollview-scrollto-not-working
         setTimeout(
           () => {
             scrollView.current!.scrollTo({
-              y: scrollToNow ? nowLayout?.y : (cellHeight * scrollOffsetMinutes) / 60,
+              y: (cellHeight * scrollOffsetMinutes) / 60,
               animated: false,
             })
           },
           Platform.OS === 'web' ? 0 : 10,
         )
       }
-    }, [scrollView.current])
+    }, [scrollView.current, zoom])
 
     React.useEffect(() => {
       const pid = setInterval(() => setNow(dayjs()), 2 * 60 * 1000)
@@ -155,12 +172,21 @@ export const CalendarBody = React.memo(
           <View style={[styles.body]} {...(Platform.OS === 'web' ? panResponder.panHandlers : {})}>
             <View style={[commonStyles.hourGuide]}>
               {hours.map((hour) => (
-                <HourGuideColumn key={hour} cellHeight={cellHeight} hour={hour} zoom={zoom} />
+                //@ts-ignore
+                <HourGuideColumn
+                  key={hour}
+                  cellHeight={cellHeight}
+                  hour={hour}
+                  zoom={zoom}
+                  scrollView={scrollView}
+                  scrollToNow={scrollToNow}
+                />
               ))}
             </View>
             {dateRange.map((date) => (
               <View style={[{ flex: 1 }]} key={date.toString()}>
                 {hours.map((hour) => (
+                  //@ts-ignore
                   <HourCell
                     key={hour}
                     cellHeight={cellHeight}
@@ -185,12 +211,7 @@ export const CalendarBody = React.memo(
                     />
                   ))}
                 {isToday(date) && (
-                  <View
-                    style={[styles.nowIndicator, { top: `${getRelativeTopInDay(now)}%` }]}
-                    onLayout={(event) => {
-                      setNowLayout(event?.nativeEvent?.layout)
-                    }}
-                  />
+                  <View style={[styles.nowIndicator, { top: `${getRelativeTopInDay(now)}%` }]} />
                 )}
               </View>
             ))}

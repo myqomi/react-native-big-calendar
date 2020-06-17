@@ -70,8 +70,11 @@ storiesOf('Desktop', module)
 
     return (
       <View style={styles.desktop}>
-        <TouchableOpacity onPress={() => setZoom(zoom + 10)}>
+        <TouchableOpacity onPress={() => setZoom(zoom + 30)}>
           <Text>{'Zoom'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setZoom(50)}>
+          <Text>{'reset'}</Text>
         </TouchableOpacity>
         <Calendar
           scrollToNow={true}

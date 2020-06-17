@@ -13,10 +13,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  View,
   Platform,
   PanResponder,
   ScrollView,
-  View,
   TouchableWithoutFeedback,
 } from 'react-native'
 
@@ -232,16 +232,32 @@ var styles = StyleSheet.create({
 })
 
 var SWIPE_THRESHOLD = 50
-var HourGuideColumn = function (_a) {
+var HourGuideColumn = memo(function (_a) {
   var cellHeight = _a.cellHeight,
     hour = _a.hour,
-    zoom = _a.zoom
+    zoom = _a.zoom,
+    scrollView = _a.scrollView,
+    scrollToNow = _a.scrollToNow
   return createElement(
     View,
-    { style: { height: zoom || cellHeight } },
+    {
+      style: [{ height: zoom || cellHeight }],
+      onLayout: function (event) {
+        var _a
+        var y = event.nativeEvent.layout.y
+        if (dayjs().$H === hour && scrollToNow) {
+          ;(_a = scrollView.current) === null || _a === void 0
+            ? void 0
+            : _a.scrollTo({
+                y: y,
+                animated: true,
+              })
+        }
+      },
+    },
     createElement(Text, { style: commonStyles.guideText }, formatHour(hour)),
   )
-}
+})
 function HourCell(_a) {
   var cellHeight = _a.cellHeight,
     onPress = _a.onPress,
@@ -280,20 +296,13 @@ var CalendarBody = memo(function (_a) {
   var _d = useState(false),
     panHandled = _d[0],
     setPanHandled = _d[1]
-  var _e = useState(),
-    nowLayout = _e[0],
-    setNowLayout = _e[1]
   useEffect(
     function () {
-      if (scrollView.current && (scrollOffsetMinutes || scrollToNow)) {
+      if (scrollView.current && scrollOffsetMinutes) {
         setTimeout(
           function () {
             scrollView.current.scrollTo({
-              y: scrollToNow
-                ? nowLayout === null || nowLayout === void 0
-                  ? void 0
-                  : nowLayout.y
-                : (cellHeight * scrollOffsetMinutes) / 60,
+              y: (cellHeight * scrollOffsetMinutes) / 60,
               animated: false,
             })
           },
@@ -301,7 +310,7 @@ var CalendarBody = memo(function (_a) {
         )
       }
     },
-    [scrollView.current],
+    [scrollView.current, zoom],
   )
   useEffect(function () {
     var pid = setInterval(function () {
@@ -380,6 +389,8 @@ var CalendarBody = memo(function (_a) {
               cellHeight: cellHeight,
               hour: hour,
               zoom: zoom,
+              scrollView: scrollView,
+              scrollToNow: scrollToNow,
             })
           }),
         ),
@@ -415,15 +426,6 @@ var CalendarBody = memo(function (_a) {
             isToday(date) &&
               createElement(View, {
                 style: [styles$1.nowIndicator, { top: getRelativeTopInDay(now) + '%' }],
-                onLayout: function (event) {
-                  var _a
-                  setNowLayout(
-                    (_a = event === null || event === void 0 ? void 0 : event.nativeEvent) ===
-                      null || _a === void 0
-                      ? void 0
-                      : _a.layout,
-                  )
-                },
               }),
           )
         }),
